@@ -152,7 +152,6 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
     KING_POSSIBLE_MOVES.forEach(({ dx, dy }) => {
       const x = chessObj.i + dx;
       const y = chessObj.j + dy;
-      console.log(x, y);
       if ((x <= 0 || x <= 7) && (y <= 0 ||y <= 7)) {
         const possiblePiece = updatableMatrix[x][y];
         if (
@@ -164,7 +163,8 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
       }
     });
     dispatch(addChessBoard(updatableMatrix));
-  }, [chessBoard, chessObj.i, chessObj.j, dispatch]);
+  }, [chessBoard, chessObj.boxcolorNumber, chessObj.chessPiece, chessObj.color, chessObj.i, chessObj.index, chessObj.j, chessObj.possibleMoveColor, dispatch]);
+
   const handleQueenPossibleMoves = useCallback(() => {
     dispatch(
       addCurrentSelectedPiece({
