@@ -39,7 +39,7 @@ export const KNIGHT_POSSIBLE_MOVES = [
   { dx: 2, dy: -1 },
   { dx: 2, dy: 1 },
   { dx: 1, dy: 2 },
-  // { dx: -1, dy: 0 },
+  { dx: -2, dy: -1 },
 ];
 export const POSSIBLE_PIECE_MOVE = {
   Q: QUEEN_POSSIBLE_MOVES,
@@ -47,7 +47,18 @@ export const POSSIBLE_PIECE_MOVE = {
   R: ROOK_POSSIBLE_MOVES,
   K:KNIGHT_POSSIBLE_MOVES,
 };
-
+export const fullNameValidation=(name:string)=>{
+  const nameRegEx=/(^[A-Za-z]{3,16})([ ]{0,1})([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})/;
+  return !nameRegEx.test(name)?"It should contain first and last name":null;
+}
+export const emailValidation=(email:string)=>{
+  const emailRegEx=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+  return !emailRegEx.test(email)?"Please enter a valid email address":null;
+}
+export const passwordValidation=(password:string)=>{
+  const passwordRegex=/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+  return !passwordRegex.test(password)?"Your password must contain between 4 and 60 characters.":null;
+}
 type style = React.SVGProps<SVGSVGElement>;
 
 export interface Istore {

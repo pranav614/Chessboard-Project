@@ -5,7 +5,7 @@ const MainPage=()=> {
   return (
     <>
       <SignIn/>
-      <Chessboard /> 
+      {/* <Chessboard />  */}
     </>
   );
 }
