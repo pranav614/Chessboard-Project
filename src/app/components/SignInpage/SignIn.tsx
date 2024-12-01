@@ -5,9 +5,14 @@ import {
   passwordValidation,
 } from "@/app/contants";
 import React, { useRef, useState } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "../../../../firebase";
+import { useRouter } from "next/navigation";
 const SignIn = () => {
+  const router = useRouter();
   const [signIn, setSignUp] = useState(true);
   const userNameText = useRef<HTMLInputElement>(null);
   const emailText = useRef<HTMLInputElement>(null);
@@ -17,30 +22,61 @@ const SignIn = () => {
   const [userNameError, setUserNameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  console.log(userNameError, emailError, passwordError);
+
   const submitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (emailText.current && passwordText.current && !signIn) {
-      console.log(emailText.current.value,  passwordText.current.value)
-      createUserWithEmailAndPassword(
-        auth,
-        emailText.current.value,
-        passwordText.current.value
-      )
-        .then((userCredential) => {
-          // Signed up
-          const user = userCredential.user;
-          console.log(user)
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(error)
-          // ..
-        });
+    if (emailText.current && passwordText.current) {
+      if (!signIn) {
+        try {
+          createUserWithEmailAndPassword(
+            auth,
+            emailText.current.value,
+            passwordText.current.value
+          )
+            .then((userCredential) => {
+              // Signed up
+              const user = userCredential.user;
+              console.log(user,auth);
+              // ...
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert("Something went wrong")
+              // ..
+            });
+        } finally {
+          console.log("done");
+        }
+      } else {
+        try {
+          signInWithEmailAndPassword(
+            auth,
+            emailText.current.value,
+            passwordText.current.value
+          )
+            .then((userCredential) => {
+              // Signed in
+              const user = userCredential.user;
+              console.log(user,auth);
+              // ...
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert("Something went wrong")
+            });
+        } finally {
+          console.log("done");
+        }
+      }
     }
   };
+
+  const handleForgotPassword = () => {
+    router.push("/forgotpassword");
+  };
+
   const handleToggle = () => {
     setSignUp((prev) => !prev);
   };
@@ -64,7 +100,7 @@ const SignIn = () => {
                 <input
                   id="email"
                   name="email"
-                  type="email"
+                  type="name"
                   ref={userNameText}
                   onChange={() => {
                     if (userNameText.current) {
@@ -108,8 +144,8 @@ const SignIn = () => {
               </label>
               <div className="text-sm">
                 <a
-                  href="#"
-                  className="font-semibold text-indigo-600 hover:text-indigo-500"
+                  className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                  onClick={handleForgotPassword}
                 >
                   Forgot password?
                 </a>
@@ -140,7 +176,7 @@ const SignIn = () => {
               onClick={submitForm}
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:"
             >
-              Sign in
+              {signIn ? "Sign In" : "Sign Up"}
             </button>
           </div>
         </form>

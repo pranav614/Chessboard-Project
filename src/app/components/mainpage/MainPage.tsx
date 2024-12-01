@@ -1,12 +1,13 @@
 import Chessboard from "../ChessBoard/ChessBoard";
+import Header from "../Header/Header";
 import SignIn from "../SignInpage/SignIn";
-const MainPage=()=> {
-
+const MainPage = () => {
   return (
     <>
-      <SignIn/>
-      <Chessboard /> 
+      <Header />
+      <SignIn />
+      {/* <Chessboard />  */}
     </>
   );
-}
+};
 export default MainPage;

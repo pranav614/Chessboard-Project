@@ -1,14 +1,18 @@
 import {
   chessPiece,
   POSSIBLE_PIECE_MOVE,
-  QUEEN_POSSIBLE_MOVES,
 } from "../contants";
 interface IPossibleMoves {
   chessObj: chessPiece;
   chessBoard: chessPiece[][];
+  currentSelectedPiece: chessPiece | null;
 }
 type ChessPiece = "Q" | "B" | "R" | "K";
-export const possibleMoves = ({ chessObj, chessBoard }: IPossibleMoves) => {
+export const possibleMoves = ({
+  chessObj,
+  chessBoard,
+  // currentSelectedPiece,
+}: IPossibleMoves) => {
   const updatedMatrix = chessBoard.map((row) =>
     row.map((column) => ({ ...column, possibleMoveColor: "" }))
   );
@@ -16,7 +20,6 @@ export const possibleMoves = ({ chessObj, chessBoard }: IPossibleMoves) => {
   POSSIBLE_PIECE_MOVE[chessObj.chessPiece as ChessPiece]?.map(({ dx, dy }) => {
     let x = chessObj?.i;
     let y = chessObj?.j;
-
     while (true) {
       x += dx;
       y += dy;
@@ -25,6 +28,13 @@ export const possibleMoves = ({ chessObj, chessBoard }: IPossibleMoves) => {
       if (targetElem.possibleMoveColor === "" && targetElem.chessPiece === "") {
         updatableMatrix[x][y].possibleMoveColor = "#B9CA43";
       } else {
+        if (
+          targetElem.chessPiece !== "" &&
+          targetElem.color !== chessObj.color
+        ) {
+          updatableMatrix[x][y].possibleMoveColor = "#FF6666";
+          break;
+        }
         break;
       }
     }
