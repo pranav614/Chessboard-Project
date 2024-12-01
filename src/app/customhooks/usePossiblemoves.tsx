@@ -5,13 +5,11 @@ import {
 interface IPossibleMoves {
   chessObj: chessPiece;
   chessBoard: chessPiece[][];
-  currentSelectedPiece: chessPiece | null;
 }
 type ChessPiece = "Q" | "B" | "R" | "K";
 export const possibleMoves = ({
   chessObj,
   chessBoard,
-  // currentSelectedPiece,
 }: IPossibleMoves) => {
   const updatedMatrix = chessBoard.map((row) =>
     row.map((column) => ({ ...column, possibleMoveColor: "" }))
