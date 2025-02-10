@@ -3,11 +3,15 @@ import { chessPiece } from "@/app/contants";
 interface ChessBoardMatrixState {
   chessBoard: chessPiece[][];
   currentSelectedPiece: chessPiece | null;
+  killedPieces: chessPiece[];
+  killablePiece:chessPiece | null;
 }
 
 const initialState: ChessBoardMatrixState = {
   chessBoard: [],
   currentSelectedPiece: null,
+  killedPieces: [],
+  killablePiece:null,
 };
 const chessBoardMatrix = createSlice({
   name: "Matrix",
@@ -22,9 +26,15 @@ const chessBoardMatrix = createSlice({
     ) => {
       state.currentSelectedPiece = action.payload;
     },
+    addKilledPieces: (state, action: PayloadAction<chessPiece>) => {
+      state.killedPieces = [...state.killedPieces, action.payload];
+    },
+    setKillablePiece:(state,action:PayloadAction<chessPiece|null>)=>{
+      state.killablePiece=action.payload
+    }
   },
 });
 
-export const { addChessBoard, addCurrentSelectedPiece } =
+export const { addChessBoard, addCurrentSelectedPiece ,setKillablePiece,addKilledPieces} =
   chessBoardMatrix.actions;
 export default chessBoardMatrix.reducer;

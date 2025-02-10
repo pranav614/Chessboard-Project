@@ -1,4 +1,3 @@
-"use client";
 import {
   chessPiece,
   BASE_WHITE_PIECES,
@@ -73,7 +72,7 @@ const ChessBoard = () => {
   }
 
   return (
-    <div className="flex justify-center ">
+    <div className="flex flex-col justify-center items-center ">
       <h1 className=" flex justify-center w-full p-5 ">Chess Game</h1>
       <div className="grid grid-cols-8 w-[48%] border border-[#d7b8a0] ">
         {updatedMatrix.map((row) =>

@@ -4,9 +4,9 @@ import SignIn from "../SignInpage/SignIn";
 const MainPage = () => {
   return (
     <>
-      <Header />
-      <SignIn />
-      {/* <Chessboard />  */}
+      {/* <Header /> */}
+      {/* <SignIn /> */}
+      <Chessboard /> 
     </>
   );
 };
