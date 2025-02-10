@@ -1,22 +1,30 @@
 "use client";
 import {
+  BLACK_PAWN_POSSIBLE_MOVES,
   chessPiece,
-  KING_POSSIBLE_MOVES,
-  KNIGHT_POSSIBLE_MOVES,
+  CONSTANT_NUMBER_ONE,
+  CONSTANT_NUMBER_SIX,
+  WHITE_COLOR_PIECE,
+  WHITE_PAWN_POSSIBLE_MOVES,
 } from "@/app/contants";
-import { possibleMoves } from "@/app/customhooks/usePossiblemoves";
+import { kingPossibleMoves } from "@/app/PossibleMoves/kingPossibleMoves";
+import { knightPossibleMoves } from "@/app/PossibleMoves/knightPossibleMoves";
+import { pawnPossibleMoves } from "@/app/PossibleMoves/pawnPossibleMovies";
+import { possibleMoves } from "@/app/PossibleMoves/possiblemoves";
 import {
   addChessBoard,
   addCurrentSelectedPiece,
+  setKillablePiece,
 } from "@/app/Slice/chessBoardMatrix";
 import { useAppSelector } from "@/app/Slice/ReduxStore";
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 interface BoxProps {
   chessObj: chessPiece;
   chessBoard: chessPiece[][];
 }
 const boxSize = "w-full";
+
 const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
   const chessBgColor = chessObj.boxcolorNumber === 0 ? "#EBECD0" : "#6D8D4D";
   const piecePossibleMoves = chessObj.possibleMoveColor
@@ -25,9 +33,15 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
   const chessColor =
     chessObj.color === "white" ? "text-[#CA5143] " : "text-black";
   const dispatch = useDispatch();
-  const currentSelectedPiece = useAppSelector(
-    (store) => store.ChessBoardMatrix.currentSelectedPiece
+  const { currentSelectedPiece, killablePiece } = useAppSelector(
+    (store) => store.ChessBoardMatrix
   );
+
+  const handleKillMove = useCallback(() => {
+    console.log({ chessObj }, { killablePiece });
+    console.log("killed");
+  }, [chessObj, killablePiece]);
+
   const handleMove = useCallback(() => {
     const currentBox = chessObj;
     if (currentSelectedPiece && currentBox.possibleMoveColor !== "") {
@@ -69,121 +83,49 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
       }
     }
   }, [chessBoard, chessObj, currentSelectedPiece, dispatch]);
+
+  const PAWN_POSSIBLE_MOVES = useMemo(() => {
+    if (chessObj.color === WHITE_COLOR_PIECE) {
+      return chessObj.i === CONSTANT_NUMBER_SIX
+        ? WHITE_PAWN_POSSIBLE_MOVES
+        : WHITE_PAWN_POSSIBLE_MOVES.slice(0, 3);
+    } else {
+      return chessObj.i === CONSTANT_NUMBER_ONE
+        ? BLACK_PAWN_POSSIBLE_MOVES
+        : BLACK_PAWN_POSSIBLE_MOVES.slice(0, 3);
+    }
+  }, [chessObj.color, chessObj.i]);
+
   const handlPawnPossibleMoves = useCallback(() => {
-    dispatch(
-      addCurrentSelectedPiece({
-        i: chessObj.i,
-        j: chessObj.j,
-        boxcolorNumber: chessObj.boxcolorNumber,
-        chessPiece: chessObj.chessPiece,
-        color: chessObj.color,
-        index: chessObj.index,
-        possibleMoveColor: chessObj.possibleMoveColor,
-      })
-    );
-    const twoMoves = {
-      i:
-        chessObj.color === "white"
-          ? Number(chessObj.i) - 2
-          : Number(chessObj.i) + 2,
-      j: Number(chessObj.j),
-    };
-    const oneMove = {
-      i:
-        chessObj.color === "white"
-          ? Number(chessObj.i) - 1
-          : Number(chessObj.i) + 1,
-      j: Number(chessObj.j),
-    };
-    const updatedArray = chessBoard.map((row, _rowIndex) => {
-      const updatedColumn = row.map((col) => {
-        if (
-          ((twoMoves.i === col.i && twoMoves.j === col.j) ||
-            (oneMove.i === col.i && oneMove.j === col.j)) &&
-          col.chessPiece === ""
-        ) {
-          return {
-            ...col,
-            possibleMoveColor: "#B9CA43",
-          };
-        } else {
-          return {
-            ...col,
-            possibleMoveColor: "",
-          };
-        }
-      });
-      return updatedColumn;
+    const updatedMatrix = pawnPossibleMoves({
+      chessBoard,
+      chessObj,
+      PAWN_POSSIBLE_MOVES,
     });
-    dispatch(addChessBoard(updatedArray));
-  }, [
-    chessBoard,
-    chessObj.boxcolorNumber,
-    chessObj.chessPiece,
-    chessObj.color,
-    chessObj.i,
-    chessObj.index,
-    chessObj.j,
-    chessObj.possibleMoveColor,
-    dispatch,
-  ]);
+    dispatch(addChessBoard(updatedMatrix));
+  }, [PAWN_POSSIBLE_MOVES, chessBoard, chessObj, dispatch]);
+
   const handleKingPossibleMoves = useCallback(() => {
-    dispatch(
-      addCurrentSelectedPiece({
-        i: chessObj.i,
-        j: chessObj.j,
-        boxcolorNumber: chessObj.boxcolorNumber,
-        chessPiece: chessObj.chessPiece,
-        color: chessObj.color,
-        index: chessObj.index,
-        possibleMoveColor: chessObj.possibleMoveColor,
-      })
-    );
-    const updatedMatrix = chessBoard.map((row) =>
-      row.map((column) => ({ ...column, possibleMoveColor: "" }))
-    );
-    const updatableMatrix = [...updatedMatrix];
-    KING_POSSIBLE_MOVES.forEach(({ dx, dy }) => {
-      const x = chessObj.i + dx;
-      const y = chessObj.j + dy;
-      if ((x <= 0 || x <= 7) && (y <= 0 || y <= 7)) {
-        const possiblePiece = updatableMatrix[x][y];
-        if (
-          possiblePiece.chessPiece === "" &&
-          possiblePiece.possibleMoveColor === ""
-        ) {
-          updatableMatrix[x][y].possibleMoveColor = "#B9CA43";
-        }
-      }
-    });
-    dispatch(addChessBoard(updatableMatrix));
-  }, [
-    chessBoard,
-    chessObj.boxcolorNumber,
-    chessObj.chessPiece,
-    chessObj.color,
-    chessObj.i,
-    chessObj.index,
-    chessObj.j,
-    chessObj.possibleMoveColor,
-    dispatch,
-  ]);
+    const updatedMatrix = kingPossibleMoves({ chessBoard, chessObj });
+    dispatch(addChessBoard(updatedMatrix));
+  }, [chessBoard, chessObj, dispatch]);
+
   const handleQueenPossibleMoves = useCallback(() => {
-    dispatch(
-      addCurrentSelectedPiece({
-        i: chessObj.i,
-        j: chessObj.j,
-        boxcolorNumber: chessObj.boxcolorNumber,
-        chessPiece: chessObj.chessPiece,
-        color: chessObj.color,
-        index: chessObj.index,
-        possibleMoveColor: chessObj.possibleMoveColor,
-      })
-    );
     const updatedMatrix = possibleMoves({ chessObj, chessBoard });
     dispatch(addChessBoard(updatedMatrix));
   }, [chessBoard, chessObj, dispatch]);
+
   const handleKnightPossibleMoves = useCallback(() => {
+    const updatableMatrix = knightPossibleMoves({ chessObj, chessBoard });
+    dispatch(addChessBoard(updatableMatrix));
+  }, [chessBoard, chessObj, dispatch]);
+
+  const handlePieceClick = useCallback(() => {
+    if (chessObj.possibleMoveColor === "#FF6666" && chessObj.chessPiece) {
+      handleKillMove();
+      return;
+    }
+
     dispatch(
       addCurrentSelectedPiece({
         i: chessObj.i,
@@ -195,23 +137,18 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
         possibleMoveColor: chessObj.possibleMoveColor,
       })
     );
-    const updatedMatrix = chessBoard.map((row) =>
-      row.map((column) => ({ ...column, possibleMoveColor: "" }))
+    dispatch(
+      setKillablePiece({
+        i: chessObj.i,
+        j: chessObj.j,
+        boxcolorNumber: chessObj.boxcolorNumber,
+        chessPiece: chessObj.chessPiece,
+        color: chessObj.color,
+        index: chessObj.index,
+        possibleMoveColor: chessObj.possibleMoveColor,
+      })
     );
-    const updatableMatrix = [...updatedMatrix];
-    KNIGHT_POSSIBLE_MOVES.forEach(({ dx, dy }) => {
-      const x = chessObj.i + dx;
-      const y = chessObj.j + dy;
-      if (x >= 0 && x <= 7 && y >= 0 && y <= 7) {
-        const possiblePiece = updatableMatrix[x][y];
-        if (possiblePiece.chessPiece === "") {
-          updatableMatrix[x][y].possibleMoveColor = "#B9CA43";
-        }
-      }
-    });
-    dispatch(addChessBoard(updatableMatrix));
-  }, [chessBoard, chessObj, dispatch]);
-  const handlePieceClick = () => {
+
     switch (chessObj.chessPiece) {
       case "P":
         handlPawnPossibleMoves();
@@ -226,10 +163,27 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
         break;
       case "N":
         handleKnightPossibleMoves();
+        break;
       default:
         handleMove();
     }
-  };
+  }, [
+    chessObj.boxcolorNumber,
+    chessObj.chessPiece,
+    chessObj.color,
+    chessObj.i,
+    chessObj.index,
+    chessObj.j,
+    chessObj.possibleMoveColor,
+    dispatch,
+    handlPawnPossibleMoves,
+    handleKillMove,
+    handleKingPossibleMoves,
+    handleKnightPossibleMoves,
+    handleMove,
+    handleQueenPossibleMoves,
+  ]);
+
   return (
     <h1
       className={`h-[70px] ${boxSize} bg-[${chessBgColor}] ${chessColor} flex justify-center items-center cursor-pointer`}

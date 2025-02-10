@@ -3,6 +3,12 @@ import { FC } from "react";
 export const BASE_WHITE_PIECES = ["R", "N", "B", "Q", "K", "B", "N", "R"];
 export const FRONT_LINE_PIECES = Array(8).fill("P");
 export const BASE_BLACK_PIECES = ["R", "N", "B", "Q", "K", "B", "N", "R"];
+export const CONSTANT_NUMBER_SIX = 6;
+export const CONSTANT_NUMBER_ONE = 1;
+export const WHITE_COLOR_PIECE="white"
+export const BLACK_COLOR_PIECE="black"
+export const WHITE_PAWN_POSSIBLE_MOVES = [{ dx: -1, dy: 0 }, { dx: -1, dy: -1 }, { dx: -1, dy: 1 }, { dx: -2, dy: 0 }]
+export const BLACK_PAWN_POSSIBLE_MOVES = [{ dx: 1, dy: 0 }, { dx: 1, dy: 1 }, { dx: 1, dy: -1 }, { dx: 2, dy: 0 }]
 export const ROOK_POSSIBLE_MOVES = [
   { dx: 0, dy: 1 },
   { dx: 0, dy: -1 },
@@ -20,7 +26,17 @@ export const KING_POSSIBLE_MOVES = [
   { dx: 1, dy: 0 },
   { dx: 0, dy: -1 },
   { dx: 0, dy: 1 },
+  { dx: 1, dy: 1 },
+  { dx: 1, dy: -1 },
+  { dx: -1, dy: -1 },
+  { dx: -1, dy: 1 },
 ];
+export const BLACK_KING_POSSIBLE_MOVES =[
+  { dx: 1, dy: 0 },
+  { dx: -1, dy: 0 },
+  { dx: 0, dy: 1 },
+  { dx: 0, dy: -1 },
+]
 export const QUEEN_POSSIBLE_MOVES = [
   { dx: -1, dy: 1 },
   { dx: 1, dy: 1 },
@@ -45,19 +61,19 @@ export const POSSIBLE_PIECE_MOVE = {
   Q: QUEEN_POSSIBLE_MOVES,
   B: BISHOB_POSSIBLE_MOVES,
   R: ROOK_POSSIBLE_MOVES,
-  K:KNIGHT_POSSIBLE_MOVES,
+  K: KNIGHT_POSSIBLE_MOVES,
 };
-export const fullNameValidation=(name:string)=>{
-  const nameRegEx=/(^[A-Za-z]{3,16})([ ]{0,1})([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})/;
-  return !nameRegEx.test(name)?"It should contain first and last name":null;
+export const fullNameValidation = (name: string) => {
+  const nameRegEx = /(^[A-Za-z]{3,16})([ ]{0,1})([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})/;
+  return !nameRegEx.test(name) ? "It should contain first and last name" : null;
 }
-export const emailValidation=(email:string)=>{
-  const emailRegEx=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-  return !emailRegEx.test(email)?"Please enter a valid email address":null;
+export const emailValidation = (email: string) => {
+  const emailRegEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+  return !emailRegEx.test(email) ? "Please enter a valid email address" : null;
 }
-export const passwordValidation=(password:string)=>{
-  const passwordRegex=/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-  return !passwordRegex.test(password)?"Your password must contain between 4 and 60 characters.":null;
+export const passwordValidation = (password: string) => {
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+  return !passwordRegex.test(password) ? "Your password must contain between 4 and 60 characters." : null;
 }
 type style = React.SVGProps<SVGSVGElement>;
 

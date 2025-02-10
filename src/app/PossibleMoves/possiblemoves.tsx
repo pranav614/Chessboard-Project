@@ -7,6 +7,7 @@ interface IPossibleMoves {
   chessBoard: chessPiece[][];
 }
 type ChessPiece = "Q" | "B" | "R" | "K";
+
 export const possibleMoves = ({
   chessObj,
   chessBoard,
