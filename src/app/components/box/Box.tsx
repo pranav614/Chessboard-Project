@@ -217,10 +217,10 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
       }}
     >
       <span>{chessObj.chessPiece}</span>
-      <span>
+      {/* <span>
         {chessObj.i}
         {chessObj.j}
-      </span>
+      </span> */}
     </h1>
   );
 };
