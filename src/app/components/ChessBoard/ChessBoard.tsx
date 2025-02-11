@@ -14,6 +14,7 @@ const ChessBoard = () => {
   const chessBoard: chessPiece[][] = useAppSelector(
     (store) => store.ChessBoardMatrix.chessBoard
   );
+  const { killedList } = useAppSelector((store) => store.ChessBoardMatrix);
 
   function createChessboardMatrix(): chessPiece[][] {
     const size = 8;
@@ -80,6 +81,13 @@ const ChessBoard = () => {
             <Box key={column.index} chessObj={column} chessBoard={chessBoard} />
           ))
         )}
+      </div>
+      <div className=" flex flex-col gap-5">
+        {killedList.map((piece, index) => (
+          <div key={index}>
+            <span style={{ color: piece.color }}>{piece.chessPiece}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

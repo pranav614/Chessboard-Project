@@ -4,14 +4,16 @@ interface ChessBoardMatrixState {
   chessBoard: chessPiece[][];
   currentSelectedPiece: chessPiece | null;
   killedPieces: chessPiece[];
-  killablePiece:chessPiece | null;
+  killablePiece: chessPiece | null;
+  killedList: chessPiece[];
 }
 
 const initialState: ChessBoardMatrixState = {
   chessBoard: [],
   currentSelectedPiece: null,
   killedPieces: [],
-  killablePiece:null,
+  killablePiece: null,
+  killedList: [],
 };
 const chessBoardMatrix = createSlice({
   name: "Matrix",
@@ -29,12 +31,20 @@ const chessBoardMatrix = createSlice({
     addKilledPieces: (state, action: PayloadAction<chessPiece>) => {
       state.killedPieces = [...state.killedPieces, action.payload];
     },
-    setKillablePiece:(state,action:PayloadAction<chessPiece|null>)=>{
-      state.killablePiece=action.payload
-    }
+    setKillablePiece: (state, action: PayloadAction<chessPiece | null>) => {
+      state.killablePiece = action.payload;
+    },
+    setKilledList: (state, action: PayloadAction<chessPiece>) => {
+      state.killedList = [...state.killedList, action.payload];
+    },
   },
 });
 
-export const { addChessBoard, addCurrentSelectedPiece ,setKillablePiece,addKilledPieces} =
-  chessBoardMatrix.actions;
+export const {
+  addChessBoard,
+  addCurrentSelectedPiece,
+  setKillablePiece,
+  addKilledPieces,
+  setKilledList,
+} = chessBoardMatrix.actions;
 export default chessBoardMatrix.reducer;

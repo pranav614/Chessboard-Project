@@ -15,6 +15,7 @@ import {
   addChessBoard,
   addCurrentSelectedPiece,
   setKillablePiece,
+  setKilledList,
 } from "@/app/Slice/chessBoardMatrix";
 import { useAppSelector } from "@/app/Slice/ReduxStore";
 import { useCallback, useMemo, useState } from "react";
@@ -38,9 +39,29 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
   );
 
   const handleKillMove = useCallback(() => {
-    console.log({ chessObj }, { killablePiece });
-    console.log("killed");
-  }, [chessObj, killablePiece]);
+    const killedPiece = chessObj;
+    const killer = killablePiece;
+    if (!killedPiece || !killer || !chessBoard) return;
+    const updatedMatrix = chessBoard.map((row) => {
+      return row.map((column) => ({
+        ...column,
+        possibleMoveColor: "",
+      }));
+    });
+    dispatch(setKilledList(chessObj));
+
+    updatedMatrix[killedPiece.i][killedPiece.j] = {
+      ...updatedMatrix[killedPiece.i][killedPiece.j],
+      chessPiece: killer.chessPiece || "",
+      color: killer.color,
+    };
+
+    updatedMatrix[killer.i][killer.j] = {
+      ...updatedMatrix[killer.i][killer.j],
+      chessPiece: "",
+    };
+    dispatch(addChessBoard(updatedMatrix));
+  }, [chessBoard, chessObj, dispatch, killablePiece]);
 
   const handleMove = useCallback(() => {
     const currentBox = chessObj;
@@ -196,10 +217,10 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
       }}
     >
       <span>{chessObj.chessPiece}</span>
-      {/* <span>
+      <span>
         {chessObj.i}
         {chessObj.j}
-      </span> */}
+      </span>
     </h1>
   );
 };

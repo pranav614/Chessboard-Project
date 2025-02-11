@@ -6,7 +6,7 @@ const MainPage = () => {
     <>
       {/* <Header /> */}
       {/* <SignIn /> */}
-      <Chessboard /> 
+      <Chessboard />
     </>
   );
 };
