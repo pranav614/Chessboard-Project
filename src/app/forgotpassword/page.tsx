@@ -8,15 +8,15 @@ const page = () => {
   const ForgotEmail = () => {
     const [forgetEmail, setForgotEmail] = useState("");
     const handleSendEmail = () => {
-      if(forgetEmail){
+      if (forgetEmail) {
         sendPasswordResetEmail(auth, forgetEmail)
-        .then(() => {
-          console.log("sent");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-        });
+          .then(() => {
+            console.log("sent");
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+          });
       }
     };
     const handleChange = (e: any) => {

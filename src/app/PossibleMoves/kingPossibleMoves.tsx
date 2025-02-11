@@ -1,8 +1,4 @@
-import {
-  chessPiece,
-  KING_POSSIBLE_MOVES,
-  KNIGHT_POSSIBLE_MOVES,
-} from "../contants";
+import { chessPiece, KING_POSSIBLE_MOVES } from "../contants";
 interface IPossibleMoves {
   chessObj: chessPiece;
   chessBoard: chessPiece[][];
