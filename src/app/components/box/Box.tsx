@@ -4,6 +4,8 @@ import {
   chessPiece,
   CONSTANT_NUMBER_ONE,
   CONSTANT_NUMBER_SIX,
+  KILL_POSSIBLE_COLOR,
+  POSSIBLE_COLOR,
   WHITE_COLOR_PIECE,
   WHITE_PAWN_POSSIBLE_MOVES,
 } from "@/app/contants";
@@ -15,7 +17,8 @@ import {
   addChessBoard,
   addCurrentSelectedPiece,
   setKillablePiece,
-  setKilledList,
+  setKilledPiecesList,
+  setMovedMovesArray,
 } from "@/app/Slice/chessBoardMatrix";
 import { useAppSelector } from "@/app/Slice/ReduxStore";
 import { useCallback, useMemo, useState } from "react";
@@ -34,9 +37,8 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
   const chessColor =
     chessObj.color === "white" ? "text-[#CA5143] " : "text-black";
   const dispatch = useDispatch();
-  const { currentSelectedPiece, killablePiece } = useAppSelector(
-    (store) => store.ChessBoardMatrix
-  );
+  const { currentSelectedPiece, killablePiece, countForWhiteOrBlackMove } =
+    useAppSelector((store) => store.ChessBoardMatrix);
 
   const handleKillMove = useCallback(() => {
     const killedPiece = chessObj;
@@ -48,7 +50,8 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
         possibleMoveColor: "",
       }));
     });
-    dispatch(setKilledList(chessObj));
+    dispatch(setKilledPiecesList(chessObj));
+    dispatch(setMovedMovesArray(chessObj));
 
     updatedMatrix[killedPiece.i][killedPiece.j] = {
       ...updatedMatrix[killedPiece.i][killedPiece.j],
@@ -99,6 +102,7 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
         return updatedColumn;
       });
       if (currentSelectedPiece && currentBox.possibleMoveColor !== " ") {
+        dispatch(setMovedMovesArray(chessObj));
         dispatch(addChessBoard(updatedMatrix));
         dispatch(addCurrentSelectedPiece(null));
       }
@@ -126,6 +130,9 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
     dispatch(addChessBoard(updatedMatrix));
   }, [PAWN_POSSIBLE_MOVES, chessBoard, chessObj, dispatch]);
 
+  const isWhiteTurn = countForWhiteOrBlackMove % 2 === 0;
+  const isBlackTurn = !isWhiteTurn;
+
   const handleKingPossibleMoves = useCallback(() => {
     const updatedMatrix = kingPossibleMoves({ chessBoard, chessObj });
     dispatch(addChessBoard(updatedMatrix));
@@ -142,33 +149,28 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
   }, [chessBoard, chessObj, dispatch]);
 
   const handlePieceClick = useCallback(() => {
-    if (chessObj.possibleMoveColor === "#FF6666" && chessObj.chessPiece) {
+    if (chessObj.possibleMoveColor === POSSIBLE_COLOR) {
+      handleMove();
+      return;
+    }
+
+    if (
+      chessObj.possibleMoveColor === KILL_POSSIBLE_COLOR &&
+      chessObj.chessPiece
+    ) {
       handleKillMove();
       return;
     }
 
-    dispatch(
-      addCurrentSelectedPiece({
-        i: chessObj.i,
-        j: chessObj.j,
-        boxcolorNumber: chessObj.boxcolorNumber,
-        chessPiece: chessObj.chessPiece,
-        color: chessObj.color,
-        index: chessObj.index,
-        possibleMoveColor: chessObj.possibleMoveColor,
-      })
-    );
-    dispatch(
-      setKillablePiece({
-        i: chessObj.i,
-        j: chessObj.j,
-        boxcolorNumber: chessObj.boxcolorNumber,
-        chessPiece: chessObj.chessPiece,
-        color: chessObj.color,
-        index: chessObj.index,
-        possibleMoveColor: chessObj.possibleMoveColor,
-      })
-    );
+    if (
+      (isWhiteTurn && chessObj.color !== "white") ||
+      (isBlackTurn && chessObj.color !== "black")
+    ) {
+      return;
+    }
+
+    dispatch(addCurrentSelectedPiece(chessObj));
+    dispatch(setKillablePiece(chessObj));
 
     switch (chessObj.chessPiece) {
       case "P":
@@ -185,17 +187,9 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
       case "N":
         handleKnightPossibleMoves();
         break;
-      default:
-        handleMove();
     }
   }, [
-    chessObj.boxcolorNumber,
-    chessObj.chessPiece,
-    chessObj.color,
-    chessObj.i,
-    chessObj.index,
-    chessObj.j,
-    chessObj.possibleMoveColor,
+    chessObj,
     dispatch,
     handlPawnPossibleMoves,
     handleKillMove,
@@ -203,6 +197,8 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
     handleKnightPossibleMoves,
     handleMove,
     handleQueenPossibleMoves,
+    isBlackTurn,
+    isWhiteTurn,
   ]);
 
   return (
@@ -217,10 +213,6 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
       }}
     >
       <span>{chessObj.chessPiece}</span>
-      {/* <span>
-        {chessObj.i}
-        {chessObj.j}
-      </span> */}
     </h1>
   );
 };
