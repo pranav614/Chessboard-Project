@@ -3,17 +3,19 @@ import { chessPiece } from "@/app/contants";
 interface ChessBoardMatrixState {
   chessBoard: chessPiece[][];
   currentSelectedPiece: chessPiece | null;
-  killedPieces: chessPiece[];
   killablePiece: chessPiece | null;
-  killedList: chessPiece[];
+  killedPiecesList: chessPiece[];
+  countForWhiteOrBlackMove: number;
+  movedMovesArray: chessPiece[];
 }
 
 const initialState: ChessBoardMatrixState = {
   chessBoard: [],
   currentSelectedPiece: null,
-  killedPieces: [],
   killablePiece: null,
-  killedList: [],
+  killedPiecesList: [],
+  movedMovesArray: [],
+  countForWhiteOrBlackMove: 0,
 };
 const chessBoardMatrix = createSlice({
   name: "Matrix",
@@ -28,14 +30,15 @@ const chessBoardMatrix = createSlice({
     ) => {
       state.currentSelectedPiece = action.payload;
     },
-    addKilledPieces: (state, action: PayloadAction<chessPiece>) => {
-      state.killedPieces = [...state.killedPieces, action.payload];
-    },
     setKillablePiece: (state, action: PayloadAction<chessPiece | null>) => {
       state.killablePiece = action.payload;
     },
-    setKilledList: (state, action: PayloadAction<chessPiece>) => {
-      state.killedList = [...state.killedList, action.payload];
+    setKilledPiecesList: (state, action: PayloadAction<chessPiece>) => {
+      state.killedPiecesList = [...state.killedPiecesList, action.payload];
+    },
+    setMovedMovesArray: (state, action: PayloadAction<chessPiece>) => {
+      state.movedMovesArray = [...state.movedMovesArray, action.payload];
+      state.countForWhiteOrBlackMove = state.movedMovesArray.length;
     },
   },
 });
@@ -44,7 +47,7 @@ export const {
   addChessBoard,
   addCurrentSelectedPiece,
   setKillablePiece,
-  addKilledPieces,
-  setKilledList,
+  setKilledPiecesList,
+  setMovedMovesArray,
 } = chessBoardMatrix.actions;
 export default chessBoardMatrix.reducer;
