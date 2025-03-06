@@ -19,6 +19,60 @@
   animation: prixClipFix 2s linear infinite;
 }
 
+.gridMobile {
+  grid-template-columns: 4fr 1fr 1fr;
+  justify-content: flex-start;
+}
+@media (max-width: 900px) {
+  .chessBoardContainer {
+    width: 90%;
+  }
+  .gridMobile {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .chessBoardContainer {
+    width: 100%;
+  }
+  .gridMobile {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+  }
+  body {
+    padding: 0px 20px;
+  }
+}
+@media (max-width: 692px) {
+  .chessBoardContainer {
+    width: 100%;
+  }
+  .gridMobile {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
+@media (max-width: 520px) {
+  .chessBox {
+    height: 60px;
+  }
+}
+@media (max-width: 350px) {
+  .chessBox {
+    height: 40px;
+  }
+}
+@media (max-width: 440px) {
+  .chessBox {
+    height: 50px;
+  }
+  body {
+    padding: 0;
+  }
+}
+
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
