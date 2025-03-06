@@ -79,15 +79,9 @@ const ChessBoard = () => {
   return (
     <div>
       <h1 className="flex justify-center w-full p-5">Chess Game</h1>
-      <div
-        className="grid grid-cols-2 gap-5"
-        style={{
-          gridTemplateColumns: "4fr 1fr 1fr",
-          justifyContent: "flex-start",
-        }}
-      >
-        <div className="flex  justify-end">
-          <div className="grid grid-cols-8 w-[60%] border border-[#d7b8a0] justify-end">
+      <div className="gridMobile grid grid-cols-2 gap-5">
+        <div className="flex justify-end">
+          <div className="chessBoardContainer grid grid-cols-8 w-[70%] border border-[#d7b8a0] justify-end">
             {updatedMatrix.map((row, rowIndex) =>
               row.map((column, colIndex) => (
                 <div style={{ position: "relative" }} key={column.index}>

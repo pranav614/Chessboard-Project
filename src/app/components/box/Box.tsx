@@ -203,7 +203,7 @@ const Box: React.FC<BoxProps> = ({ chessObj, chessBoard }) => {
 
   return (
     <h1
-      className={`h-[70px] ${boxSize} bg-[${chessBgColor}] ${chessColor} flex justify-center items-center cursor-pointer`}
+      className={`chessBox h-[70px] ${boxSize} bg-[${chessBgColor}] ${chessColor} flex justify-center items-center cursor-pointer`}
       onClick={handlePieceClick}
       style={{
         background: chessBgColor,
